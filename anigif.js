@@ -1,6 +1,3 @@
-
-
-
 (function(window, document) {
     
     "use strict";
@@ -12,19 +9,19 @@
             this.progressSink = null;
             
             this.options = {
-                onlyLastFrames: 300,
-                framesPerSecond: 10,
-                selector: "#main",
-                cores: 8,
+                onlyLastFrames: 50,
+                framesPerSecond: 5,
+                selector: "#gifcanvas",
+                cores: 2,
                 ratio: 1,
-                quality: "Medium",
+                quality: "Low",
                 base_url: "",
                 fixedWidth: "",
-                period: "Online"
+                period: "Offline"
             };
             
             this.init()    
-            
+
         },
         
         init: function() {
@@ -44,11 +41,11 @@
         },
         
         log: function(str) {
-            //console.log(str);
+            console.log(str);
             //this._log += str + "\r\n";
         },
         
-        startRecord: function() {
+        startRecord: function(){
             
             this.init();
             
@@ -58,6 +55,7 @@
             }
             this.canvasOnly = this.el.tagName=="CANVAS"
             console.log("canvas only: " + this.canvasOnly)
+	    window.postMessage({ type: "anirecord", key: "start" }, "*");
             this.recordFrame();
         },
         
@@ -102,12 +100,10 @@
                         })
            }
            else
-            window.html2canvas( [ self.el ], {
-                    onrendered: function(canvas) {
-                        self.resizeImage(canvas, self.options.ratio, function(err, canvas_small) {
-                            cba(null, canvas_small);    
-                        })
-                    }
+            window.html2canvas(self.el).then(function(canvas) {
+		self.resizeImage(canvas, self.options.ratio, function(err, canvas_small) {
+		    cba(null, canvas_small);    
+		})
             });
            },
         
@@ -164,7 +160,7 @@
             //set dimensions
             newCanvas.width = oldCanvas.width;
             newCanvas.height = oldCanvas.height;
-        
+
             //apply the old canvas to the new one
             context.drawImage(oldCanvas, 0, 0);
         
@@ -212,17 +208,12 @@
           else {
             document.body.appendChild(this.frames[i]);
             this.replaceSvgWithCanvas(this.frames[i]);
-        
-            window.html2canvas( [ self.frames[i] ], {
-                onrendered: function(canvas) {
-                    handleImage(canvas);
-                    self.frames[i].parentElement.removeChild(self.frames[i]);
-                }
-                });    
+	    
+   	    window.html2canvas(self.frames[i]).then(function(canvas){
+                handleImage(canvas);
+            	self.frames[i].parentElement.removeChild(self.frames[i]);
+            });
           }
-            
-            
-            
         },
         
        resizeImage: function(canvas, ratio, cba) {
@@ -285,14 +276,14 @@
         composeAnimatedGif: function(cba) {
             var self = this
             //console.log("starting gif composition")
-            var encoder = new window.GIFEncoder_WebWorker({base_url: self.options.base_url+"jsgif/"});
-            encoder.setRepeat(0); //auto-loop
+            var encoder = new window.GIFEncoder_WebWorker({base_url: "https://cdn.jsdelivr.net/gh/egfx/anig@master/jsgif/"});
+	    encoder.setRepeat(0); //auto-loop
             encoder.setDelay(1000/this.options.framesPerSecond);
-            encoder.setThreads(this.options.cores)
+            encoder.setThreads(window.navigator.hardwareConcurrency);
+	    encoder.setTransparent(0x00000000);
             encoder.start();
-             for (var i=0; i<this.images.length; i++) {
+            for (var i=0; i<this.images.length; i++) {
                 var context = this.images[i].getContext('2d');
-                
                 encoder.addFrame(context);
             }
             
@@ -305,6 +296,7 @@
                 //this.img = 'data:image/gif;base64,' + window.encode64(encoder.stream().getData())
                 
                 //self.img64 = 'data:image/gif;base64,' + window.encode64(data)
+                //console.log(data);
                 self.img = window.getObjURL(data, "image/gif")
                 self.log(self.img);
                 cba(null)
