@@ -5461,7 +5461,7 @@ window.encode64 = function(input) {
                 documentClone.write(serializeDoctype(document.doctype) + "<html></html>");
                 // Chrome scrolls the parent document for some reason after the write to the cloned window???
                 restoreOwnerScroll(this.referenceElement.ownerDocument, scrollX, scrollY);
-                documentClone.replaceChild(documentClone.adoptNode(this.documentElement), documentClone.documentElement);
+                //documentClone.replaceChild(documentClone.adoptNode(this.documentElement), documentClone.documentElement);
                 documentClone.close();
                 return iframeLoad;
             };
