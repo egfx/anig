@@ -284,7 +284,7 @@
 	    encoder.setRepeat(0); //auto-loop
             encoder.setDelay(1000/this.options.framesPerSecond);
             encoder.setThreads(window.navigator.hardwareConcurrency);
-	    encoder.setTransparent(0x00000000);
+	    //encoder.setTransparent(0x00000000);
             encoder.start();
             for (var i=0; i<this.images.length; i++) {
                 var context = this.images[i].getContext('2d');
