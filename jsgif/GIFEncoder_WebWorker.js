@@ -8,7 +8,7 @@ GIFEncoder_WebWorker = function(options) {
         this.frames = []
         this.num_threads = 8
         this.base_url = options.base_url
-        this.transparent = 0x00000000
+        //this.transparent = 0x00000000
     }
     
     var setRepeat = exports.setRepeat = function setRepeat(repeat) {
