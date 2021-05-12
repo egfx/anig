@@ -101,6 +101,10 @@
            }
            else
             window.html2canvas( [ self.el ], {
+		    useCORS: true,
+        	    allowTaint: true,
+                    removeContainer: false,
+                    foreignObjectRendering: false,
                     onrendered: function(canvas) {
                         self.resizeImage(canvas, self.options.ratio, function(err, canvas_small) {
                             cba(null, canvas_small);    
@@ -212,6 +216,10 @@
             this.replaceSvgWithCanvas(this.frames[i]);
 	    
    	    window.html2canvas( [ self.frames[i] ], {
+		useCORS: true,
+        	allowTaint: true,
+        	removeContainer: false,
+        	foreignObjectRendering: false,
                 onrendered: function(canvas) {
                     handleImage(canvas);
                     self.frames[i].parentElement.removeChild(self.frames[i]);
