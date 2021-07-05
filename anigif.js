@@ -100,7 +100,7 @@
                         })
            }
            else
-            window.html2canvas( [ self.el ], {
+            /*window.html2canvas( [ self.el ], {
 		    useCORS: true,
         	    allowTaint: true,
                     removeContainer: false,
@@ -110,7 +110,13 @@
                             cba(null, canvas_small);    
                         })
                     }
-            });
+            });*/
+	    htmlToImage.toCanvas(self.el)
+		  .then(function (canvas) {
+		    	self.resizeImage(canvas, self.options.ratio, function(err, canvas_small) {
+                            cba(null, canvas_small);    
+                        })
+		  });
            },
         
         cloneDom: function(el) {
@@ -215,7 +221,7 @@
             document.body.appendChild(this.frames[i]);
             this.replaceSvgWithCanvas(this.frames[i]);
 	    
-   	    window.html2canvas( [ self.frames[i] ], {
+   	    /*window.html2canvas( [ self.frames[i] ], {
 		useCORS: true,
         	allowTaint: true,
         	removeContainer: false,
@@ -224,7 +230,13 @@
                     handleImage(canvas);
                     self.frames[i].parentElement.removeChild(self.frames[i]);
                 }
-            });
+            });*/
+	    
+	    htmlToImage.toCanvas(self.frames[i])
+		  .then(function (canvas) {
+		    	handleImage(canvas);
+                    	self.frames[i].parentElement.removeChild(self.frames[i]);
+		  });
           }
         },
         
