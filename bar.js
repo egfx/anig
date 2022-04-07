@@ -152,9 +152,9 @@ window.anigif_bar = {
             var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
             var isIE = /*@cc_on!@*/false || document.documentMode;   // At least IE6    
             
-            if (!isChrome & !isFirefox & !isSafari) {
+            /*if (!isChrome & !isFirefox & !isSafari) {
                 alert("Gifw00t! has been tested on Chrome, Firefox and Safari only and may not work on your browser")
-            }
+            }*/
         },
         
         count: function(seconds, cba) {
